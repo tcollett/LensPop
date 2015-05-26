@@ -1,0 +1,32 @@
+
+
+first generate idealized lenspopulation:
+    python   MakeLensPop.py (~7 hours, makes all the lenses on the sky)
+
+Now observe the idealized lens population:
+    (with very loose limits on SN and maglims)
+    python ModelAll.py CFHT 0.1 (~8 hrs, 0.1 is fraction of sky, not survey fraction)
+    python ModelAll.py Euclid 0.1 (~9 hrs)
+    python ModelAll.py DES 0.1 (~16 hrs)
+    python ModelAll.py LSST 0.1 (~22 hrs)
+You can of course cut down shot noise by simulating more sky (upto 1), but it'll take longer.
+
+Now Make Results:
+    python MakeResults.py CFHT
+    python MakeResults.py DES
+    python MakeResults.py LSST
+    python MakeResults.py Euclid
+
+Make Figures:
+
+
+
+
+Make Dataset for Website:
+
+
+
+
+
+
+Make Multiplane lenses:
