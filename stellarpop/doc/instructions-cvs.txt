@@ -1,0 +1,171 @@
+
+
+Using cvs
+*********
+ 
+                                                                                
+i) For the first time:
+ 
+In the directory in which you want the stellarpop module to appear as a
+directory:
+
+> cvs -d:pserver:XXX@kipac.stanford.edu:/a9/cvs login
+> cvs -d:pserver:XXX@kipac.stanford.edu:/a9/cvs co stellarpop
+
+"co" stands for "checkout". All cvs commands may be followed by the option
+"-d" followed by the name of the cvs repository (cvsroot directory). This
+will give you an stellarpop directory with all the desired contents, plus a
+directory called "cvs" in each of its subdirectories. In each of these cvs
+directories there is a file called "Root" containing the location of the
+repository, so that when working in the stellarpop directory tree you do not
+need the -d option.
+
+ 
+ii) To get the latest version of the code:
+ 
+In the subdirectory you want to update:
+ 
+> cvs update
+ 
+For example, to ensure all files are up to date, do this from the stellarpop 
+directory itself. cvs will then recursively move through the file tree 
+comparing the contents of your stellarpop directory with that of the stellarpop 
+module in the repository. Comments are supplied to show you whereabouts in 
+the tree cvs has got to, e.g.
+
+cvs update: Updating src
+                                                                                
+Where files have changed, either locally or remotely, cvs prints the 
+offending filename with a letter next to it:
+                                                                                
+M file.txt .................. You have Modified file.txt so that it doesn't
+                              match the repository file.txt
+                               
+U file.txt .................. Someone else has modified file.txt, so cvs has
+                              Updated your copy using that in the repository
+                                                                                
+P file.txt .................. Someone else has modified file.txt, so cvs has
+                              Patched your copy using that in the repository
+
+C file.txt .................. Both you and someone else have modified file.txt,
+                              and cvs cannot merge the two together - a 
+                              Conflict has occurred. 
+                              What you get is a (non-compilable) file
+                              with BOTH sets of modifications in it, which you
+                              have to edit in order to merge both sets of
+                              changes sensibly. You may have to interact with
+                              your co-workers at this point!
+
+Local files that do not have a corresponding file in the repository are 
+flagged '?'.
+
+To retrieve an older version of a file, use the -r option to the update 
+command:
+
+> cvs up -r 1.2 -p file.txt > file.v1.2.txt
+
+Note that the -p option is needed to redirect the file into a separate 
+file - otherwise file.txt would be replaced (locally) by revision 1.2. To 
+find out which revision you want, read the output of
+
+> cvs log file.txt | more
+
+                                                                                
+iii) To include your modifications into the package:
+                                                                                
+To add the file "file.txt" to the repository:
+                                                                                
+> cvs add file.txt
+                                                                                
+This labels your local copy of "file.txt" such that when you run
+                                                                                
+> cvs commit file.txt
+                                                                                
+the file is added to the repository. Likewise, to remove a file from the
+repository, do
+                                                                                
+> cvs remove file.txt
+> cvs commit file.txt
+                                                                                
+Simply updating the repository with your modified (already existing) file.txt
+is done with
+
+> cvs commit file.txt
+                                                                                
+Whenever you commit a change to a file, you'll be given an editor (as
+specified by your $EDITOR environment variable) in which to enter your
+comments. Don't include your userid, the date or the time, cvs will
+include this automatically. Extreme code should be self-documenting, so 
+keep your comments short - best of all is to use the "-m" option:
+
+> cvs ci -m "References added" file.txt
+                                                                                
+You can then read this and all the other comments for that file by doing
+                                                                                
+> cvs log file.txt
+                                                                                
+which prints the history of the file, most recent changes first. Note that 
+"ci" is short for "commit" or "check-in".
+                                                                                
+IMPORTANT - for the sanity of all involved it is best if you only submit code
+that you know at least compiles! If you can rigorously test it locally as well
+then so much the better.
+
+
+iv) Stable versions
+
+When, collectively, it has been decided that a stable version has been
+reached, a set of files can be "tagged" for future reference. For example,
+to tag the files in the PaperI subdirectory at the time of the submission
+of the paper, one might do:
+
+> cvs tag submitted doc/PaperI
+
+The to recover the submitted version, do (somewhere else)
+
+> cvs co -r submitted stellarpop/doc/PaperI
+
+(which, incidentally, gives you the PaperI directory and all its 
+ancestors).
+
+
+
+v) What not to do:
+
+- Check in code that does not compile
+- Keep large data files, executables, libraries etc in the repository: 
+these should be generated by the code locally, or obtained from elsewhere 
+in the case of data.
+- Create any directories without consulting the rest of the team.
+- Go for long periods of time without a cvs update!
+
+
+vi) How was the stellarpop repository set up?
+
+Our sysadmin created a cvs repository called "cvs" in the /a9/ directory on the
+machine answering to the name "kipac.stanford.edu". The command to do this would
+have been something like
+
+$ cvs -d /a9/cvs init
+
+The stellarpop module was then added to the repository using the import command:
+
+$ cd stellarpop
+$ cvs -d:pserver:pjm@kipac.stanford.edu:/a9/cvs import \
+-m "Imported sources" stellarpop stellarpop start
+
+The arguments after the comment are
+1) The desired module name, in which the contents of the cwd are placed
+2) A vendor tag, which is required but has little meaning or for people like us
+3) A release tag, which again is largely for internal use but has to be there
+
+
+
+For more details about cvs, and more commands for monitoring the repository
+etc, see the cvs man page on a linux machine, or read the following web pages:
+
+http://www.slac.stanford.edu/BFROOT/www/Computing/Environment/Tools/CVS-BF.html
+http://cvsbook.red-bean.com/OSDevWithCVS_3E.pdf
+http://www.cvshome.org/docs/manual/
+
+                                                                                

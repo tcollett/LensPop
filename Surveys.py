@@ -81,7 +81,8 @@ class Survey():
             self.exposuretimes=[3500,5500,5500]
             self.gains=[1.62,1.62,1.62]
             self.seeing=[.8,.8,0.8]
-            self.nexposures=10
+            self.nexposures=1 # this isn't actually true, but the 2d pdfs
+                              # are for the CFHT coadds (approximately)
             self.degrees_of_survey=150
             self.readnoise=(5)
             twodg=cPickle.load(open("2dg_CFHT.pkl",'r'))

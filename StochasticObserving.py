@@ -16,7 +16,7 @@ class SO():
         sb=-2.5*numpy.log10(sbf)
         return et,sb
 
-    def PSFfloor(self,a=[]):
+    def PSFfloor(self,a=[],dummy=None):
         #function that encodes the seeing strategy
         mode=self.strategy
         x=self.strategyx
@@ -38,14 +38,16 @@ class SO():
                 else:
                     floor1=(self.bfac*(self.bl[1])**2-self.rfac*(self.rs[1])**2)**0.5
             except FloatingPointError:
-                floor1=0
+                floor1=0 # this should never get called
+
             try:
                 floor2=self.rs[1]*self.magnification[1]
             except KeyError:
                 floor2=999
 
+
             floor=numpy.min([floor1,floor2])
-                
+
             return (floor)*self.pixelsize
 
         if mode == "resolveclever":
@@ -85,11 +87,11 @@ class SO():
                     psfs2[band][i]=a*1
                     sbs2[band][i]=b*1
                 self.SOdraw=[psfs2,sbs2]
-                psffloor=self.PSFfloor(psfs[band])
+                psffloor=self.PSFfloor(psfs[band],dummy=band)
             else:
                 psfs[band]=SOdraw[0][band]
                 sbs[band]=SOdraw[1][band]
-                psffloor=self.PSFfloor(psfs[band])
+                psffloor=self.PSFfloor(psfs[band],dummy=band)
 
             for i in range(len(psfs[band])):
                 if psfs[band][i]<psffloor and psfs[band][i]>worstacceptedpsf:

@@ -1,0 +1,46 @@
+
+
+                                 stellarpop
+
+
+Galaxy stellar population SED modelling, for stellar mass estimation with
+rigorous error propagation. Inference of stellar population parameters (mass,
+age, redshift etc) is performed using a simple homegrown MCMC sampler, with
+model selection via the Bayesian information criterion. As well as this
+primary script, the package comes with other subsidiary scripts, including the
+colour prediction and K-correction generation tool mag2mag.
+
+
+Author: Matt Auger
+
+History: 
+   2008-10-30  Started basic codebase
+   
+
+Dependencies:
+   matplotlib
+     scipy
+     numpy
+     ipython
+     pyfits
+
+   All of these should be available for package managers of most *nix
+   distributions - under Fedora, "yum install matplotlib" takes care of almost
+   everything automatically.   
+
+
+Installation notes:
+   The stellarpop codebase is available via cvs from the KIPAC cvs server; cvs
+   update to get the latest version of the code. 
+   $cwd/stellarpop  must be added to your PATH and PYTHONPATH, with eg
+     setenv $PATH $PATH:$cwd/stellarpop
+     setenv $PYTHONPATH $PYTHONPATH:$cwd/stellarpop
+
+
+Operation notes:   
+   The stellarpop code is self-documenting:
+   
+     stellarmass -h
+     mag2mag -h
+     
+   give brief introductions to the scripts. 

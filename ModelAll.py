@@ -41,20 +41,22 @@ if experiment=="CFHT":
 if experiment=="CFHTa":
     surveys+=["CFHTa"] #dummy CFHT
 if experiment=="DES":
-    surveys+=["DESb"] #Best Single epoch image
     surveys+=["DESc"] #Optimal stacking of data
+    surveys+=["DESb"] #Best Single epoch image
     surveys+=["DESa"] #full coadd (Gaussianised)
 if experiment=="LSST":
-    surveys+=["LSSTb"] #Best Single epoch image
     surveys+=["LSSTc"] #Optimal stacking of data
+    surveys+=["LSSTb"] #Best Single epoch image
     surveys+=["LSSTa"] #full coadd (Gaussianised)
+    #print "only doing LSSTc"
+
 
 S={}
 n={}
 for survey in surveys:
     S[survey]=FastLensSim(survey,fractionofseeing=1)
     S[survey].bfac=float(2)
-    S[survey].rfac=float(1)
+    S[survey].rfac=float(2)
 
 
 t0=time.clock()
@@ -120,6 +122,7 @@ for sourcepop in ["lsst"]:
 
     lastsurvey="non"
     for survey in surveys:
+
         S[survey].setLensPars(lenspars["ml"],lenspars["rl"],lenspars["ql"],reset=True)
         for j in range(nsources):
             S[survey].setSourcePars(lenspars["b"][j+1],lenspars["ms"][j+1],\
@@ -170,7 +173,7 @@ for sourcepop in ["lsst"]:
         if survey!="Euclid":
             if S[survey].seeingtest!="Fail":
                 if survey not in ["CFHT","CFHTa"]:
-                    S[survey].makeLens(noisy=True,stochasticmode="1P",SOdraw=SOdraw)
+                    S[survey].makeLens(noisy=True,stochasticmode="1P",SOdraw=SOdraw,MakeModel=False)
                     rfpf,rfsn=S[survey].RingFinderSN(SNcutA=a,magcut=b,SNcutB=[c,d],mode="donotcrossconvolve")
                 else:
                     rfpf,rfsn=S[survey].RingFinderSN(SNcutA=a,magcut=b,SNcutB=[c,d],mode="crossconvolve")

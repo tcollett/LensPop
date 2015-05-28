@@ -1,0 +1,18 @@
+# ============================================================================
+# 2008-10-30 (Thursday) 16:42 PDT
+# 
+# Checked in the initial module, no templates yet. 
+# Need to install:
+#    matplotlib
+#      scipy
+#      numpy
+#      ipython
+#      pyfits
+# As per Matt's README... Keep track of problems for other new python users...
+# 
+# Matt recommedns:
+
+http://www.scipy.org/doc/api_docs/SciPy.html
+http://www.scipy.org/Numpy_Example_List
+
+# ============================================================================

@@ -276,15 +276,17 @@ class FastLensSim(SO,S2N):
 
 #===========================================================================
 
-    def makeLens(self,stochastic=True,save=False,noisy=True,stochasticmode="MP",SOdraw=[],bands=[],musthaveallbands=False):
+    def makeLens(self,stochastic=True,save=False,noisy=True,stochasticmode="MP",SOdraw=[],bands=[],musthaveallbands=False,MakeModel=True):
         if stochastic==True:self.stochasticObserving(mode=stochasticmode,SOdraw=SOdraw,musthaveallbands=musthaveallbands)
         if self.seeingtest=="Fail":return None
         if bands==[]:bands=self.bands
-        self.MakeModel(bands)
+        
+        if MakeModel:
+            self.MakeModel(bands)
 
         if self.strategy=="resolve":
-            if stochastic==True:self.stochasticObserving(mode=stochasticmode,SOdraw=SOdraw)
-        
+            if stochastic==True:self.stochasticObserving(mode=stochasticmode,SOdraw=SOdraw) #have to rerun stochastic observing now we know the magnification
+
         self.ObserveLens(noisy=noisy)
         return [self.galmodel,self.sourcemodel,self.model,self.magnification,self.totallensedsrcmag]
         

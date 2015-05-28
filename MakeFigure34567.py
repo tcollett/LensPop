@@ -41,8 +41,7 @@ for survey in surveystoread:
  for sourcepop in ["lsst"]:
    ss=str(survey)
    filename="../%s_%s_lists.pkl"%(survey,sourcepop)
-   #filename="%s_%s_lists.pkl"%(survey,sourcepop)
-
+   filename="%s_%s_lists.pkl"%(survey,sourcepop)
    try:
        f=open(filename,"rb")
        namelist=cPickle.load(f)
@@ -67,12 +66,11 @@ for survey in surveystoread:
         print key, numpy.array(weights[survey][key]).sum()
 
 
-save=False
+save=True#False
 show=True
 
 bson=numpy.array([2.66,1.24,1.27,2.39,1.41,1.27,1.00,1.3,1.0,1.19,1.22,1.36,1.76,1.19,1.29,1.56,1.04,0.85,1.10,1.23,1.16,0.93,1.03,1.4,0.74,1.21,1.14,1.74,2.03,1.23,2.55,1.05,1.51,4.36,0.94,0.93,3.11,1.79,0.96,1.40,1.3,0.81,1.95,1.66,1.55,1.07,1.06,1.38,0.52,2.16,1.40,1.44])
 plt.hist(bson,bins=numpy.linspace(0,3,16),weights=bson*0+220./len(bson),fc="red",alpha=0.8,label="SL2S")
-
 a,b=numpy.histogram(bl["CFHT"]["rfpf"],bins=numpy.linspace(0,3,31),weights=weights["CFHT"]["rfpf"])
 a*=2#double since finer bins
 plt.plot(b[:-1]+(b[1]-b[0])/2.,a,c="k",lw=3,ls="dashed",label="Prediction")
@@ -207,7 +205,7 @@ from scipy.ndimage.filters import gaussian_filter as gf
 idx=2
 a[idx:]=gf(a,2)[idx:]
 b=gf(b,4)
-c=gf(c,2)
+c=gf(c,4)
 d=gf(d,4)
 
 #d*=4

@@ -151,18 +151,22 @@ for survey in surveystoread:
                 if sspl[i]["pf"][survey][1]==False:continue
 
                 try:
+                    bb=sspl[i]["bestband"][survey][1]
+                    #print sspl[i]["seeing"][survey][bb]
+                    #print sspl[i]["mag"][1]*sspl[i]["rs"][1],
+                    try:
+                        (sspl[i]["b"][1]**2-sspl[i]["rs"][1]**2)**0.5
+                    except FloatingPointError: print 0
+                except KeyError:
+                  pass
+                try:
                   if sspl[i]["resolved"][survey][1][sspl[i]["bestband"][survey][1]]:
                     bb=sspl[i]["bestband"][survey][1]
                     if sspl[i]["mag"][1]<3:continue
                     if sspl[i]["SN"][survey][1][bb][0]<20:continue
-                    if sspl[i]["rs"][1]*sspl[i]["mag"][1]<sspl[i]["seeing"][survey][band]:continue
-                    if sspl[i]["rs"][1]**2+sspl[i]["seeing"][survey][bb]**2\
-                       < 2* sspl[i]["b"][1]**2 \
-                       :continue
-
-
+                    
                     bl["resolved"].append(sspl[i]["b"][1])
-                    weights["resolved"].append(1./frac)
+                    weights["resolved"].append(1./fract)
                     zs["resolved"].append(sspl[i]["zs"][1])
                     rs["resolved"].append(sspl[i]["rs"][1])
                     zl["resolved"].append(sspl[i]["zl"])
@@ -173,10 +177,9 @@ for survey in surveystoread:
 
                     if sspl[i]["rfpf"][survey][1]:
                         if sspl[i]["rfsn"][survey][1][0]<20:continue
-
+                        if sspl[i]["resolved"][survey][1]["RF"]==False:continue
 
                         if experiment=="CFHT" or experiment=="CFHTa":
-                            if sspl[i]["resolved"][survey][1]["RF"]==False:continue
                             if sspl[i]["zl"]>1:continue
                             if sspl[i]["zl"]<0.2:continue
                             if sspl[i]["ml"]["i_SDSS"]<17:continue
