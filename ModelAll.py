@@ -1,6 +1,6 @@
 from __init__ import *
 import cPickle
-import pyfits
+#import pyfits
 import sys
 import pylab as plt
 import time
@@ -194,6 +194,8 @@ for sourcepop in ["lsst"]:
         ###
 
         #If you want to save the images (it may well be a lot of data!):
+        #import pyfits #(or the astropy equivalent)
+
         #folder="where_to_save_fits_images"
         #folder="%s/%i"%(folder,i)
         #for band in S[survey].bands:

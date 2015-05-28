@@ -3,7 +3,6 @@ import numpy
 from pylens import *
 from imageSim import profiles,convolve,SBModels
 import distances as D
-import pyfits
 import cPickle
 import indexTricks as iT
 import numpy,pylab
