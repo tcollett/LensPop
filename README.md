@@ -5,37 +5,47 @@ LICENSE
 
 The code is open access, but please email thomas.collett@port.ac.uk to tell me that you are using it. Please cite Collett 2015, if you make use of these codes in your work.
 
+The documentation is deliberately sparse - I'd much rather you email me asking to collaborate than use the code as a black box.
+
 ===============================================================================
 LENS POPULATION
 
-If you don't want to simulate lenses, but do want to know the properties of future samples, we make these available for each of the surveys. These are space seperated text files, with one lens per line:
+If you don't want to simulate lenses, but do want to know the properties of future samples, we make these available for each of the surveys. These are space seperated text files, with one lens per line. The columns are explained at the start of each file). 
 
-Euclid_lenses.txt
-LSST_lenses.txt
-DES_lenses.txt
+The files are:
+    Euclid_lenses.txt
+    LSSTa_lenses.txt
+    LSSTb_lenses.txt
+    LSSTc_lenses.txt
+    DESa_lenses.txt
+    DESb_lenses.txt
+    DESc_lenses.txt
 
-The columns in the tables are 
-
-
-
-
-
-
-
+a refers to lenses discoverable in the full co-add
+b refers to lenses discoverable in the best single epoch imaging
+c refers to lenses discoverable in the optimally stacked coadd
 
 ===============================================================================
 INSTALLATION
 
-The code is mostly python, so should work out of the box (if you have standard astrophysical libraries installed already) except the deflection angles code which must be compiled using:
+First clone the repo with
+   git clone "https://github.com/tcollett/LensPop.git" 
+
+Make a few folders to put things in
+   cd LensPop  
+   mkdir idealisedlenses
+   mkdir LensStats
+
+The code is mostly python, so should work out of the box (if you have standard astrophysical libraries installed already - if you have any problems install anaconda python) except the deflection angles code which must be compiled using:
 
    cd pylens
    f2py -c -m powerlaw powerlaw.f
    
 ===============================================================================
 HOW TO REPRODUCE COLLETT 2015 
-
-first generate idealized lenspopulation:
-    python   MakeLensPop.py (~7 hours, makes all the lenses on the sky)
+(Timings are based on my ~2011 intel i5 desktop)
+First generate idealized lenspopulation:
+    python MakeLensPop.py (~7 hours, makes all the lenses on the sky)
 
 Now observe the idealized lens population:
     (with very loose limits on SN and maglims)
@@ -52,6 +62,8 @@ Now Make Results:
     python MakeResults.py LSST
     python MakeResults.py Euclid
 
+Now make figures showing what you've found
+    python MakeFigures34567.py
 
 
 ===============================================================================
@@ -65,7 +77,7 @@ HOW TO MAKE MOCK COADDS (OR BEST SINGLE EPOCH IMAGING)
 Simply find somewhere to put all the data (it'll be a lot!), and uncomment  Lines 190 through 210.
 
 ===============================================================================
-HOW TO MAKE SINGLE EPOCH IMAGING.
+HOW TO MAKE ALL SINGLE EPOCH IMAGING.
 
-Hack the code (it should be pretty easy) or email me: thomas.collett@port.ac.uk
+Hack the code (it should be moderately easy) or email me: thomas.collett@port.ac.uk
 ===============================================================================
