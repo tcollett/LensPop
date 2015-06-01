@@ -17,9 +17,9 @@ class Survey():
             self.nexposures=10
             self.degrees_of_survey=5000
             self.readnoise=(10/4.5)
-            twodg=cPickle.load(open("2dg_DES.pkl",'r'))
-            twodr=cPickle.load(open("2dr_DES.pkl",'r'))
-            twodi=cPickle.load(open("2di_DES.pkl",'r'))
+            twodg=cPickle.load(open("2dpdfs/2dg_DES.pkl",'r'))
+            twodr=cPickle.load(open("2dpdfs/2dr_DES.pkl",'r'))
+            twodi=cPickle.load(open("2dpdfs/2di_DES.pkl",'r'))
             self.stochasticobservingdata=[twodg,twodr,twodi]
             if Name=="DESsv":
                 self.degrees_of_survey=150
@@ -55,9 +55,9 @@ class Survey():
             self.nexposures=100
             self.degrees_of_survey=18000
             self.readnoise=(10/4.5)
-            twodg=cPickle.load(open("2dg_LSST.pkl",'r'))
-            twodr=cPickle.load(open("2dr_LSST.pkl",'r'))
-            twodi=cPickle.load(open("2di_LSST.pkl",'r'))
+            twodg=cPickle.load(open("2dpdfs/2dg_LSST.pkl",'r'))
+            twodr=cPickle.load(open("2dpdfs/2dr_LSST.pkl",'r'))
+            twodi=cPickle.load(open("2dpdfs/2di_LSST.pkl",'r'))
             self.stochasticobservingdata=[twodg,twodr,twodi]
             if Name[-1]=="a":
                 self.strategy="absolute"
@@ -85,9 +85,9 @@ class Survey():
                               # are for the CFHT coadds (approximately)
             self.degrees_of_survey=150
             self.readnoise=(5)
-            twodg=cPickle.load(open("2dg_CFHT.pkl",'r'))
-            twodr=cPickle.load(open("2dr_CFHT.pkl",'r'))
-            twodi=cPickle.load(open("2di_CFHT.pkl",'r'))
+            twodg=cPickle.load(open("2dpdfs/2dg_CFHT.pkl",'r'))
+            twodr=cPickle.load(open("2dpdfs/2dr_CFHT.pkl",'r'))
+            twodi=cPickle.load(open("2dpdfs/2di_CFHT.pkl",'r'))
             self.stochasticobservingdata=[twodg,twodr,twodi]
             self.strategy="absolute"
             self.strategyx=10

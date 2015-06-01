@@ -79,5 +79,5 @@ Simply find somewhere to put all the data (it'll be a lot!), and uncomment  Line
 ===============================================================================
 HOW TO MAKE ALL SINGLE EPOCH IMAGING.
 
-Hack the code (it should be moderately easy) or email me: thomas.collett@port.ac.uk
+Hack the code (it should be moderately easy) or email me: thomas.collett@port.ac.uk. This will be a huge amount of data [tens of terabytes for all the lenses in LSST, and that's before simulating non-lenses], so plan accordingly!
 ===============================================================================
