@@ -2,6 +2,9 @@ import distances
 from scipy import interpolate
 import cPickle,numpy,math
 import indexTricks as iT
+
+import matplotlib
+matplotlib.use('TkAgg')
 import pylab as plt
 from PopulationFunctions import *
 
@@ -45,7 +48,7 @@ class SourcePopulation(SourcePopulation_):
             self.loadcosmos()
         elif population=="lsst":
             self.loadlsst()
-        
+
 
         #NB all the functions are in the inherited from class.
 
@@ -67,7 +70,7 @@ class LensSample():
 
         self.L=LensPopulation(reset=reset,sigfloor=sigfloor,zlmax=zlmax,bands=bands,D=D)
 
-        self.S=SourcePopulation(reset=reset,bands=bands,D=D,population=sourcepop)        
+        self.S=SourcePopulation(reset=reset,bands=bands,D=D,population=sourcepop)
 
         self.E=EinsteinRadiusTools(D=D)
 
@@ -79,7 +82,7 @@ class LensSample():
         import time
         t0=time.clock()
         if prunenonlenses==False: assert N<60000
-        
+
         self.lens={}
         self.reallens={}
         M=N*1
@@ -91,7 +94,7 @@ class LensSample():
                 tnow=time.clock()
                 ti=(tnow-t0)/float(N-M)
                 timeleft=ti*M/60.
-                
+
 
             print M,timeleft," minutes left"
             if M>100000:
@@ -101,7 +104,7 @@ class LensSample():
             M-=n
             zl,sigl,ml,rl,ql=self.L.drawLensPopulation(n)
             zs,ms,xs,ys,qs,ps,rs,mstar,mhalo=self.S.drawSourcePopulation(n*nsources,sourceplaneoverdensity=firstod,returnmasses=True)
-            
+
             zl1=zl*1
             sigl1=sigl*1
             for i in range(nsources-1):
@@ -110,7 +113,7 @@ class LensSample():
 
             b=self.E.sie_rein(sigl,zl,zs)
             for i in range(n):
-                l +=1 
+                l +=1
                 self.lens[l]={}
                 if b[i]**2>(xs[i]**2+ys[i]**2):
                     self.lens[l]["lens?"]=True
@@ -124,7 +127,7 @@ class LensSample():
                 for j in range(nsources):
                     self.lens[l]["zs"][j+1]=zs[i+j*n]
                     self.lens[l]["b"][j+1] =b[i+j*n]
-                    
+
                 self.lens[l]["ml"]={}
                 self.lens[l]["rl"]={}
                 self.lens[l]["ms"]={}
@@ -171,12 +174,12 @@ class LensSample():
                             print l2
 
                         if (l2+1)%10000==0:
-                          if save:  
+                          if save:
                             fn="idealisedlenses/lenspopulation_%s_%i.pkl"%(self.sourcepopulation,l2-10000+1)
                             print fn
                             f=open(fn,'wb')
                             cPickle.dump(self.reallens,f,2)
-                            f.close()                        
+                            f.close()
                             del self.reallens
                             self.reallens={}
 
@@ -188,10 +191,10 @@ class LensSample():
             print l2,fn
             f=open(fn,'wb')
             cPickle.dump(self.reallens,f,2)
-            f.close()                        
+            f.close()
 
         if prunenonlenses==False:
-          if save:  
+          if save:
             f=open("idealisedlenses/nonlenspopulation_%s.pkl"%self.sourcepopulation,'wb')
             cPickle.dump(self.lens,f,2)
             f.close()
@@ -208,7 +211,7 @@ class LensSample():
     def Pick_a_lens(self,i=None,dspl=False,tspl=False):
         if i ==None:
             numpy.random.randint(0,self.n)
-        
+
         self.rli={}
         self.mli={}
         self.msi={}
@@ -241,10 +244,19 @@ class LensSample():
         return True
 
 if __name__ == "__main__":
+    # Simulate all lenses on the sky - takes about 7 hours:
+    # fsky = 1
+    # Fast test - under a minute:
+    fsky = 0.001
+
     import distances
-    fsky=1
-    D=distances.Distance()
-    Lpop=LensPopulation(reset=True,sigfloor=100,zlmax=2,D=D)
-    Ndeflectors=Lpop.Ndeflectors(2,zmin=0,fsky=1)
-    L=LensSample(reset=False,sigfloor=100,cosmo=[0.3,0.7,0.7],sourcepop="lsst")
-    L.Generate_Lens_Pop(int(Ndeflectors),firstod=1,nsources=1,prunenonlenses=True)
+    D = distances.Distance()
+
+    Lpop = LensPopulation(reset=True, sigfloor=100, zlmax=2, D=D)
+
+    Ndeflectors = Lpop.Ndeflectors(2, zmin=0, fsky=fsky)
+
+    L = LensSample(reset=False, sigfloor=100, cosmo=[0.3,0.7,0.7],
+                   sourcepop="lsst")
+
+    L.Generate_Lens_Pop(int(Ndeflectors), firstod=1, nsources=1, prunenonlenses=True)
