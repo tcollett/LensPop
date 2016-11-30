@@ -159,4 +159,3 @@ class _Gauss:
             return s
         except:
             return x*0.
-
