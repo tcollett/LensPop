@@ -1,4 +1,5 @@
 import cPickle,numpy
+
 class Survey():
     def  __init__(self,Name):
         self.zeroexposuretime=1
@@ -168,4 +169,3 @@ class Survey():
 
         degrees_of_whole_sky=41253.
         self.f_sky=float(self.degrees_of_survey)/degrees_of_whole_sky
-

@@ -37,13 +37,28 @@ The files are:
 
 ## Installation
 
+### Users
+
+The following _should_ work:
+```
+   pip install git+git://github.com/drphilmarshall/LensPop.git#egg=lenspop
+```
+
+### Developers
+
 First clone the repo with
 ```
    git clone "https://github.com/tcollett/LensPop.git"
 ```
-Make a few folders to put things in:
+and then set up your path with
 ```
-   cd LensPop  
+   python setup.py develop
+```
+
+### Notes
+
+You'll need to make a few folders to put things in:
+```
    mkdir idealisedlenses
    mkdir LensStats
 ```

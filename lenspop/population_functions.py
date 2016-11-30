@@ -1,34 +1,35 @@
-import distances
 from scipy import interpolate
 import cPickle,numpy,math
 import indexTricks as iT
 
+import distances
+
 #====================================================================================
 
 class RedshiftDependentRelation():
+
     def __init__(self,D=None,reset=False,cosmo=[0.3,0.7,0.7]):
         self.beginRedshiftDependentRelation(D,reset=reset,cosmo=cosmo)
 
-    def beginRedshiftDependentRelation(self,D,reset,zmax=10,cosmo=[0.3,0.7,0.7]):  
+    def beginRedshiftDependentRelation(self,D,reset,zmax=10,cosmo=[0.3,0.7,0.7]):
         self.zmax=zmax
         self.zbins,self.dz=numpy.linspace(0,self.zmax,401,retstep=True)
         self.z2bins,self.dz2=numpy.linspace(0,self.zmax,201,retstep=True)
         if D==None:
-            import distances
             D=distances.Distance(cosmo=cosmo)
         self.D=D
-        
+
         if reset!=True:
             try:
             #load useful redshift splines
                 splinedump=open("redshiftsplines.pkl","rb")
                 self.Da_spline,self.Dmod_spline,self.volume_spline,self.Da_bispline=cPickle.load(splinedump)
-            except IOError or EOFError:   
+            except IOError or EOFError:
                 self.redshiftfunctions()
         else:
             self.redshiftfunctions()
 
-    def redshiftfunctions(self):   
+    def redshiftfunctions(self):
         D=self.D
         zbins=self.zbins
         z2bins=self.z2bins
@@ -71,7 +72,7 @@ class RedshiftDependentRelation():
             corfrac=1
         else:
             print "don't know those units yet"
-        if z2==None:
+        if z2 is None:
             return self.splev(z1,self.Da_spline)*corfrac
         else:
             z1,z2=self.biassert(z1,z2)
@@ -120,23 +121,24 @@ class EinsteinRadiusTools(RedshiftDependentRelation):
 
 
 #====================================================================================
+
 class Population(RedshiftDependentRelation):
     def  __init__(self):
         pass
 
-    def draw_apparent_magnitude(self,M,z,band=None,colours=None):
-        if band!=None:
-            colours=self.colour(z,band)
-        if colours==None:
-            colours=0
+    def draw_apparent_magnitude(self, M, z, band=None, colours=None):
+        if band is not None:
+            colours = self.colour(z,band)
+        if colours is None:
+            colours = 0
             print "warning no k-correction"
-        Dmods=self.Dmod(z)
+        Dmods = self.Dmod(z)
         ml = M - colours + Dmods
         return ml
-    
-    def draw_apparent_size(self,r_phys,z): 
-        rl = r_phys/(self.Da(z,units="kpc"))
-        rl *= 206264 
+
+    def draw_apparent_size(self, r_phys, z):
+        rl = r_phys/(self.Da(z, units="kpc"))
+        rl *= 206264
         return rl
 
 #====================================================================================
@@ -153,18 +155,18 @@ class LensPopulation_(Population):
         self.beginLensPopulation(D,reset)
 
 
-    def beginLensPopulation(self,D,reset): 
+    def beginLensPopulation(self,D,reset):
         reset=True
         if reset!=True:
             try:
             #load Lens-population splines
                 splinedump=open("lenspopsplines.pkl","rb")
                 self.cdfdNdzasspline,self.cdfdsigdzasspline,self.dNdzspline,self.zlbins,zlmax,sigfloor,self.colourspline,bands=cPickle.load(splinedump)
-            except IOError or EOFError or ValueError:   
+            except IOError or EOFError or ValueError:
                 self.lenspopfunctions()
             #check sigfloor and zlmax are same as requested
             if zlmax!=self.zlmax or self.sigfloor!=sigfloor:
-                self.lenspopfunctions() 
+                self.lenspopfunctions()
             #check all the necessary colours are included
             redocolours=False
             for band in self.bands:
@@ -225,7 +227,7 @@ class LensPopulation_(Population):
 
 
     def Colourspline(self):
-        from stellarpop import tools 
+        from stellarpop import tools
         sed = tools.getSED('BC_Z=1.0_age=10.00gyr')
         #different SEDs don't change things much
 
@@ -233,7 +235,7 @@ class LensPopulation_(Population):
         z=self.zlbins
         self.colourspline={}
         for band in self.bands:
-          if band!="VIS":  
+          if band!="VIS":
             c=z*0
             Cband=tools.filterfromfile(band)
             for i in range(len(z)):
@@ -288,8 +290,8 @@ class LensPopulation_(Population):
             z,zmin=zmin,z
         N=interpolate.splint(zmin,z,self.dNdzspline)
         N*=fsky
-        return N 
-    
+        return N
+
     def phi(self,sigma,z):
         sigma[sigma==0]+=1e-6
         phi_star=(8*10**-3)*self.D.h**3
@@ -328,7 +330,7 @@ class LensPopulation_(Population):
             if band !="VIS":
                 self.ml[band]=self.draw_apparent_magnitude(self.Mr,self.zl,band)
             else: pass
-            self.rl[band]=self.draw_apparent_size(self.r_phys[band],self.zl) 
+            self.rl[band]=self.draw_apparent_size(self.r_phys[band],self.zl)
         return self.zl,self.sigl,self.ml,self.rl,self.ql
 
 #====================================================================================
@@ -338,9 +340,9 @@ class SourcePopulation_(Population):
                   bands=['F814W_ACS','g_SDSS','r_SDSS','i_SDSS','z_SDSS','Y_UKIRT','VIS'],cosmo=[0.3,0.7,0.7],population="cosmos"
                   ):
         self.bands=bands
-        
+
         self.beginRedshiftDependentRelation(D,reset)
-        
+
         if population=="cosmos":
             self.loadcosmos()
         elif population=="lsst":
@@ -353,7 +355,7 @@ class SourcePopulation_(Population):
             #load pickledcosmos
             cosmosdump=open("cosmosdata.pkl","rb")
             cosmosphotozs=cPickle.load(cosmosdump)
-        except IOError or EOFError:   
+        except IOError or EOFError:
             import re
             photozs=open('../Forecaster/cosmos_zphot_mag25.tbl','r').readlines()[10:]
             splinedump=open("cosmosdata.pkl","wb")
@@ -401,7 +403,7 @@ class SourcePopulation_(Population):
         print "new lsst catalogue"
         data=cPickle.load(f)
         f.close()
-        
+
         self.zc=data[:,2]
         self.m={}
         #print data[:,0].max()-data[:,0].min()
@@ -441,7 +443,7 @@ class SourcePopulation_(Population):
         q=q[:N]
 
         return q
-     
+
     def drawSourcePopulation(self,number,sourceplaneoverdensity=10,returnmasses=False):
         source_index=numpy.random.randint(0,len(self.zc),number*3)
         #source_index=source_index[((self.zc[source_index]<10) & (self.zc[source_index]>0.05))]
@@ -458,9 +460,9 @@ class SourcePopulation_(Population):
         self.r_phys=self.RofMz(self.Mvs,self.zs,scatter=True)
         self.rs=self.draw_apparent_size(self.r_phys,self.zs)
         self.qs=self.draw_flattening(number)
-        
+
         self.ps=numpy.random.random_sample(number )*180
-        
+
         #cosmos has a source density of ~0.015 per square arcsecond
         if self.population=="cosmos":
             fac=(0.015)**-0.5
@@ -480,7 +482,7 @@ class SourcePopulation_(Population):
             self.mstar_src=self.mstar[source_index]
             self.mhalo_src=self.mhalo[source_index]
             return self.zs,self.ms,self.xs,self.ys,self.qs,self.ps,self.rs,self.mstar_src,self.mhalo_src
-        
+
         return self.zs,self.ms,self.xs,self.ys,self.qs,self.ps,self.rs
 
 
@@ -498,7 +500,7 @@ if __name__=="__main__":
     #RedshiftDependentRelation(reset=True)
 
     #L=LensPopulation_(reset=True,sigfloor=100)
-    
+
     S=SourcePopulation_(reset=False,population="cosmos")
     S2=SourcePopulation_(reset=False,population="lsst")
 
@@ -510,45 +512,3 @@ if __name__=="__main__":
     print len(S2.Mv)/(0.2**2)/(60.**2)
 
     #print EarlyTypeRelations(self,100,z=None,scatter=True,band=None)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
