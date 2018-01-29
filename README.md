@@ -41,7 +41,12 @@ The files are:
 
 The following _should_ work:
 ```
-   pip install git+git://github.com/drphilmarshall/LensPop.git#egg=lenspop
+   pip install git+git://github.com/drphilmarshall/LensPop.git#egg=lenspop --upgrade
+```
+Check with:
+```
+python
+import lenspop
 ```
 
 ### Developers
@@ -54,6 +59,8 @@ and then set up your path with
 ```
    python setup.py develop
 ```
+You can then push to a remote fork and submit pull requests as needed.
+
 
 ### Notes
 
