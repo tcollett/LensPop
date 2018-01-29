@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function
 from math import pi
 
 from .profiles import _Sersic, _Gauss
@@ -18,7 +19,7 @@ class SBModel:
         self.keys.sort()
         if self.keys not in self._SBkeys:
             import sys
-            print 'Not all parameters were defined!'
+            print('Not all parameters were defined!')
             sys.exit()
         self._baseProfile.__init__(self)
         self.vmap = {}
@@ -93,7 +94,7 @@ class Gauss(_Gauss):
             keys.sort()
         if keys!=['amp','pa','q','r0','sigma','x','y']:
             import sys
-            print "Not all parameters defined!"
+            print("Not all parameters defined!")
             sys.exit()
         imageSim._Gauss.__init__(self)
         self.invar = var
@@ -156,7 +157,7 @@ class PointSource(GM, PM):
         keys = var.keys()+const.keys()
         keys.sort()
         if keys!=['amp','x','y']:
-            print "Not all parameters defined!",keys
+            print("Not all parameters defined!",keys)
             df
         self.keys = keys
         self.values = {}

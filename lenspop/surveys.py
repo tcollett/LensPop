@@ -1,4 +1,7 @@
-import cPickle,numpy
+from __future__ import absolute_import, division, print_function
+
+from six.moves import cPickle as pickle
+import numpy
 
 class Survey():
     def  __init__(self,Name):
@@ -18,9 +21,9 @@ class Survey():
             self.nexposures=10
             self.degrees_of_survey=5000
             self.readnoise=(10/4.5)
-            twodg=cPickle.load(open("2dpdfs/2dg_DES.pkl",'r'))
-            twodr=cPickle.load(open("2dpdfs/2dr_DES.pkl",'r'))
-            twodi=cPickle.load(open("2dpdfs/2di_DES.pkl",'r'))
+            twodg=pickle.load(open("2dpdfs/2dg_DES.pkl",'r'))
+            twodr=pickle.load(open("2dpdfs/2dr_DES.pkl",'r'))
+            twodi=pickle.load(open("2dpdfs/2di_DES.pkl",'r'))
             self.stochasticobservingdata=[twodg,twodr,twodi]
             if Name=="DESsv":
                 self.degrees_of_survey=150
@@ -36,7 +39,7 @@ class Survey():
                 dumg=numpy.array([[1.2,21.7],[1.2,21.7]])
                 dumr=numpy.array([[0.95,20.7],[0.95,20.7]])
                 dumi=numpy.array([[0.95,20.1],[0.95,20.1]])
-                print "dummy seeing,strat"
+                print("dummy seeing,strat")
                 self.stochasticobservingdata=[dumg,dumr,dumi]
                 self.strategy="absolute"
                 self.strategyx=10
@@ -56,9 +59,9 @@ class Survey():
             self.nexposures=100
             self.degrees_of_survey=18000
             self.readnoise=(10/4.5)
-            twodg=cPickle.load(open("2dpdfs/2dg_LSST.pkl",'r'))
-            twodr=cPickle.load(open("2dpdfs/2dr_LSST.pkl",'r'))
-            twodi=cPickle.load(open("2dpdfs/2di_LSST.pkl",'r'))
+            twodg=pickle.load(open("2dpdfs/2dg_LSST.pkl",'r'))
+            twodr=pickle.load(open("2dpdfs/2dr_LSST.pkl",'r'))
+            twodi=pickle.load(open("2dpdfs/2di_LSST.pkl",'r'))
             self.stochasticobservingdata=[twodg,twodr,twodi]
             if Name[-1]=="a":
                 self.strategy="absolute"
@@ -86,9 +89,9 @@ class Survey():
                               # are for the CFHT coadds (approximately)
             self.degrees_of_survey=150
             self.readnoise=(5)
-            twodg=cPickle.load(open("2dpdfs/2dg_CFHT.pkl",'r'))
-            twodr=cPickle.load(open("2dpdfs/2dr_CFHT.pkl",'r'))
-            twodi=cPickle.load(open("2dpdfs/2di_CFHT.pkl",'r'))
+            twodg=pickle.load(open("2dpdfs/2dg_CFHT.pkl",'r'))
+            twodr=pickle.load(open("2dpdfs/2dr_CFHT.pkl",'r'))
+            twodi=pickle.load(open("2dpdfs/2di_CFHT.pkl",'r'))
             self.stochasticobservingdata=[twodg,twodr,twodi]
             self.strategy="absolute"
             self.strategyx=10
@@ -148,7 +151,7 @@ class Survey():
             self.stochasticobservingdata=[twodg,twodr,twodi]
             self.degrees_of_survey=41253
         else:
-            print "I don't know that survey"
+            print("I don't know that survey")
             exit()
 
 
