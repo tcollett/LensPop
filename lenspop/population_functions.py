@@ -1,5 +1,8 @@
+from __future__ import absolute_import, division, print_function
+
 from scipy import interpolate
-import cPickle,numpy,math
+from six.moves import cPickle as pickle
+import numpy,math
 import indexTricks as iT
 
 import distances
@@ -23,7 +26,7 @@ class RedshiftDependentRelation():
             try:
             #load useful redshift splines
                 splinedump=open("redshiftsplines.pkl","rb")
-                self.Da_spline,self.Dmod_spline,self.volume_spline,self.Da_bispline=cPickle.load(splinedump)
+                self.Da_spline,self.Dmod_spline,self.volume_spline,self.Da_bispline=pickle.load(splinedump)
             except IOError or EOFError:
                 self.redshiftfunctions()
         else:
@@ -56,7 +59,7 @@ class RedshiftDependentRelation():
 
         #pickle the splines
         splinedump=open("redshiftsplines.pkl","wb")
-        cPickle.dump([self.Da_spline,self.Dmod_spline,self.volume_spline,self.Da_bispline],splinedump,2)
+        pickle.dump([self.Da_spline,self.Dmod_spline,self.volume_spline,self.Da_bispline],splinedump,2)
 
     def Volume(self,z1,z2=None):
         if z2==None:
@@ -71,7 +74,7 @@ class RedshiftDependentRelation():
         elif units=="Mpc":
             corfrac=1
         else:
-            print "don't know those units yet"
+            print("don't know those units yet")
         if z2 is None:
             return self.splev(z1,self.Da_spline)*corfrac
         else:
@@ -131,7 +134,7 @@ class Population(RedshiftDependentRelation):
             colours = self.colour(z,band)
         if colours is None:
             colours = 0
-            print "warning no k-correction"
+            print("warning no k-correction")
         Dmods = self.Dmod(z)
         ml = M - colours + Dmods
         return ml
@@ -161,7 +164,7 @@ class LensPopulation_(Population):
             try:
             #load Lens-population splines
                 splinedump=open("lenspopsplines.pkl","rb")
-                self.cdfdNdzasspline,self.cdfdsigdzasspline,self.dNdzspline,self.zlbins,zlmax,sigfloor,self.colourspline,bands=cPickle.load(splinedump)
+                self.cdfdNdzasspline,self.cdfdsigdzasspline,self.dNdzspline,self.zlbins,zlmax,sigfloor,self.colourspline,bands=pickle.load(splinedump)
             except IOError or EOFError or ValueError:
                 self.lenspopfunctions()
             #check sigfloor and zlmax are same as requested
@@ -245,7 +248,7 @@ class LensPopulation_(Population):
 
     def lensPopSplineDump(self):
         splinedump=open("lenspopsplines.pkl","wb")
-        cPickle.dump([self.cdfdNdzasspline,self.cdfdNdsigz0asspline,self.cdfdsigdzasspline,self.dNdzspline,self.zlbins,self.zlmax,self.sigfloor,self.colourspline,self.bands],splinedump,2)
+        pickle.dump([self.cdfdNdzasspline,self.cdfdNdsigz0asspline,self.cdfdsigdzasspline,self.dNdzspline,self.zlbins,self.zlmax,self.sigfloor,self.colourspline,self.bands],splinedump,2)
 
     def draw_z(self,N):
         return interpolate.splev(numpy.random.random(N),self.cdfdNdzasspline)
@@ -257,7 +260,7 @@ class LensPopulation_(Population):
             sigs =interpolate.splev(numpy.random.random(len(z)),self.cdfdNdsigz0asspline)
             return sigs
         else:
-            print "Warning: drawing from 2dpdf is low accuracy"
+            print("Warning: drawing from 2dpdf is low accuracy")
             return self.cdfdsigdzasspline.ev(numpy.random.random(len(z)),z)
 
     def draw_zsig(self,N):
@@ -354,7 +357,7 @@ class SourcePopulation_(Population):
         try:
             #load pickledcosmos
             cosmosdump=open("cosmosdata.pkl","rb")
-            cosmosphotozs=cPickle.load(cosmosdump)
+            cosmosphotozs=pickle.load(cosmosdump)
         except IOError or EOFError:
             import re
             photozs=open('../Forecaster/cosmos_zphot_mag25.tbl','r').readlines()[10:]
@@ -372,7 +375,7 @@ class SourcePopulation_(Population):
             decz=cosmosphotozs[3,:]
             zc=cosmosphotozs[6,:]
             cosmosphotozs=cosmosphotozs[:,((zc<10)&(zc>0))]
-            cPickle.dump(cosmosphotozs,splinedump,2)
+            pickle.dump(cosmosphotozs,splinedump,2)
 
         self.zc=cosmosphotozs[6,:]
 
@@ -397,17 +400,17 @@ class SourcePopulation_(Population):
 
     def loadlsst(self):
         self.population="lsst"
-        import cPickle
+        import pickle
 
         f=open('lsst.1sqdegree_catalog2.pkl','rb')
-        print "new lsst catalogue"
-        data=cPickle.load(f)
+        print("new lsst catalogue")
+        data=pickle.load(f)
         f.close()
 
         self.zc=data[:,2]
         self.m={}
-        #print data[:,0].max()-data[:,0].min()
-        #print data[:,1].max()-data[:,1].min()
+        #print(data[:,0].max()-data[:,0].min())
+        #print(data[:,1].max()-data[:,1].min())
 
         self.m["g_SDSS"]=data[:,3]
         self.m["r_SDSS"]=data[:,4]
@@ -492,7 +495,7 @@ class AnalyticSourcePopulation_(SourcePopulation_):
                   ):
         self.bands=bands
         self.beginRedshiftDependentRelation(D,reset)
-        print "not written!"
+        print("not written!")
 
 
 
@@ -505,10 +508,10 @@ if __name__=="__main__":
     S2=SourcePopulation_(reset=False,population="lsst")
 
 
-    print numpy.median(S.Mv[S.m["i_SDSS"]<25])-numpy.median(S2.Mv[S2.m["i_SDSS"]<25])
-    print len(S.Mv[S.m["i_SDSS"]<25])*1./(len(S2.Mv[S2.m["i_SDSS"]<25])*100)
-    print len(S.Mv)/(60.**2)/2.
-    print len(S2.Mv[S2.m["i_SDSS"]<25])/(0.2**2)/(60.**2)
-    print len(S2.Mv)/(0.2**2)/(60.**2)
+    print(numpy.median(S.Mv[S.m["i_SDSS"]<25])-numpy.median(S2.Mv[S2.m["i_SDSS"]<25]))
+    print(len(S.Mv[S.m["i_SDSS"]<25])*1./(len(S2.Mv[S2.m["i_SDSS"]<25])*100))
+    print(len(S.Mv)/(60.**2)/2.)
+    print(len(S2.Mv[S2.m["i_SDSS"]<25])/(0.2**2)/(60.**2))
+    print(len(S2.Mv)/(0.2**2)/(60.**2))
 
-    #print EarlyTypeRelations(self,100,z=None,scatter=True,band=None)
+    #print(EarlyTypeRelations(self,100,z=None,scatter=True,band=None))

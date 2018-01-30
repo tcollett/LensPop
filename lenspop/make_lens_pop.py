@@ -1,5 +1,6 @@
 from scipy import interpolate
-import cPickle,numpy,math
+from six.moves import cPickle as pickle
+import numpy,math
 import indexTricks as iT
 
 import matplotlib
@@ -100,7 +101,7 @@ class LensSample():
                 timeleft=ti*M/60.
 
 
-            print M,timeleft," minutes left"
+            print(M,timeleft," minutes left")
             if M>100000:
                 n=100000
             else:
@@ -175,14 +176,14 @@ class LensSample():
                         self.lens={}
 
                         if l2%1000==0:
-                            print l2
+                            print(l2)
 
                         if (l2+1)%10000==0:
                           if save:
                             fn="idealisedlenses/lenspopulation_%s_%i.pkl"%(self.sourcepopulation,l2-10000+1)
-                            print fn
+                            print(fn)
                             f=open(fn,'wb')
-                            cPickle.dump(self.reallens,f,2)
+                            pickle.dump(self.reallens,f,2)
                             f.close()
                             del self.reallens
                             self.reallens={}
@@ -192,23 +193,23 @@ class LensSample():
                     self.lens={}
         if save:
             fn="idealisedlenses/lenspopulation_%s_residual_%i.pkl"%(self.sourcepopulation,l2)
-            print l2,fn
+            print(l2,fn)
             f=open(fn,'wb')
-            cPickle.dump(self.reallens,f,2)
+            pickle.dump(self.reallens,f,2)
             f.close()
 
         if prunenonlenses==False:
           if save:
             f=open("idealisedlenses/nonlenspopulation_%s.pkl"%self.sourcepopulation,'wb')
-            cPickle.dump(self.lens,f,2)
+            pickle.dump(self.lens,f,2)
             f.close()
-            print len(self.lens.keys())
+            print(len(self.lens.keys()))
 
         self.lens=self.reallens
 
     def LoadLensPop(self,j=0,sourcepopulation="lsst"):
         f=open("idealisedlenses/lenspopulation_%s_%i.pkl"%(sourcepopulation,j),'rb')
-        self.lens=cPickle.load(f)
+        self.lens=pickle.load(f)
         f.close()
 
 

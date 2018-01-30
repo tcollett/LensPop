@@ -1,6 +1,8 @@
+from __future__ import absolute_import, division, print_function
+
 import indexTricks as iT
 import numpy
-import cPickle
+from six.moves import cPickle as pickle
 import pylab as plt
 
 from pylens import *
@@ -50,9 +52,9 @@ class FastLensSim(SO,S2N):
         self.zeroexposuretime=survey.zeroexposuretime
         #-----------------------------------------------------
         ###do some setup
-	self.xl=(self.side-1.)/2.
-	self.yl=(self.side-1.)/2.
-	self.x,self.y = iT.coords((self.side,self.side))
+        self.xl=(self.side-1.)/2.
+        self.yl=(self.side-1.)/2.
+        self.x,self.y = iT.coords((self.side,self.side))
         self.r2 = (self.x-self.xl)**2+(self.y-self.yl)**2
 
         self.pixelunits=False
@@ -95,7 +97,7 @@ class FastLensSim(SO,S2N):
 
     def trytoconvert(self,par,p):
         try:return par/p
-        except NameError:print "warning one of the parameters is not defined"
+        except NameError:print("warning one of the parameters is not defined")
 
 #===========================================================================
 

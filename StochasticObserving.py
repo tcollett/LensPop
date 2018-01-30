@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function
 import numpy,copy
 
 class SO():
@@ -51,7 +52,7 @@ class SO():
             return (floor)*self.pixelsize
 
         if mode == "resolveclever":
-            print "warning: the resolveclever code isn't finsihed"
+            print("warning: the resolveclever code isn't finsihed")
             (self.fos*self.bl[1]*self.pixelsize)
             numpy.sort(a)
             la=len(a)
