@@ -5,7 +5,7 @@ from six.moves import cPickle as pickle
 import numpy,math
 import indexTricks as iT
 
-import distances
+from . import Distance
 
 #====================================================================================
 
@@ -19,7 +19,7 @@ class RedshiftDependentRelation():
         self.zbins,self.dz=numpy.linspace(0,self.zmax,401,retstep=True)
         self.z2bins,self.dz2=numpy.linspace(0,self.zmax,201,retstep=True)
         if D==None:
-            D=distances.Distance(cosmo=cosmo)
+            D=Distance(cosmo=cosmo)
         self.D=D
 
         if reset!=True:
