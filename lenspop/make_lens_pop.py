@@ -7,7 +7,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import pylab as plt
 
-from . import Distance
+import distances
 import lenspop
 
 # from PopulationFunctions import *
@@ -69,7 +69,7 @@ class LensSample():
                   ):
         self.sourcepopulation=sourcepop
         if D==None:
-            D=Distance(cosmo=cosmo)
+            D=distances.Distance(cosmo=cosmo)
 
         self.L = lenspop.LensPopulation(reset=reset, sigfloor=sigfloor,
                                         zlmax=zlmax, bands=bands, D=D)

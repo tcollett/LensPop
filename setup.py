@@ -7,7 +7,7 @@ setup(
     author_email="thomas.collett@port.ac.uk",
     url="https://github.com/tcollett/LensPop",
     packages=['lenspop','stellarpop','imageSim','2dpdfs','pylens'],
-    py_modules = ['indexTricks','ndinterp','StochasticObserving','SignaltoNoise'],
+    py_modules = ['distances', 'indexTricks','ndinterp','StochasticObserving','SignaltoNoise',],
     description='Simulating galaxy-scale strong lens populations',
     long_description=open("README.md").read(),
     package_data={"": ["README.md"]},
