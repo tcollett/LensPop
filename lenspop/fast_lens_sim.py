@@ -7,7 +7,7 @@ import pylab as plt
 
 from pylens import *
 import imageSim
-import distances as D
+from . import Distance as D
 from .surveys import Survey
 
 from StochasticObserving import SO
