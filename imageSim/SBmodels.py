@@ -1,6 +1,8 @@
-import profiles
-from pointSource import PixelizedModel as PM, GaussianModel as GM
+from __future__ import absolute_import, division, print_function
 from math import pi
+
+from .profiles import _Sersic, _Gauss
+from .pointSource import PixelizedModel as PM, GaussianModel as GM
 
 def cnts2mag(cnts,zp):
     from math import log10
@@ -17,7 +19,7 @@ class SBModel:
         self.keys.sort()
         if self.keys not in self._SBkeys:
             import sys
-            print 'Not all parameters were defined!'
+            print('Not all parameters were defined!')
             sys.exit()
         self._baseProfile.__init__(self)
         self.vmap = {}
@@ -54,8 +56,8 @@ class SBModel:
             self.__setattr__(key,self.vmap[key].value)
 
 
-class Sersic(SBModel,SBProfiles.Sersic):
-    _baseProfile = SBProfiles.Sersic
+class Sersic(SBModel, _Sersic):
+    _baseProfile = _Sersic
     _SBkeys = [['amp','n','pa','q','re','x','y'],
                 ['logamp','n','pa','q','re','x','y'],
                 ['amp','n','q','re','theta','x','y'],
@@ -63,10 +65,6 @@ class Sersic(SBModel,SBProfiles.Sersic):
 
     def __init__(self,name,pars,convolve=0):
         SBModel.__init__(name,pars,convolve)
-
-        else:
-            self.__dict__[key] = value
-
 
     def getMag(self,amp,zp):
         from scipy.special import gamma
@@ -81,7 +79,7 @@ class Sersic(SBModel,SBProfiles.Sersic):
         return self.getMag(self.amp,zp)
 
 
-class Gauss(profiles._Gauss):
+class Gauss(_Gauss):
 
     def __init__(self,name,var=None,const=None,convolve=0):
         if const is None:
@@ -96,9 +94,9 @@ class Gauss(profiles._Gauss):
             keys.sort()
         if keys!=['amp','pa','q','r0','sigma','x','y']:
             import sys
-            print "Not all parameters defined!"
+            print("Not all parameters defined!")
             sys.exit()
-        profiles._Gauss.__init__(self)
+        imageSim._Gauss.__init__(self)
         self.invar = var
         self.keys = keys
         self.values = {'r0':None}
@@ -150,7 +148,7 @@ class Gauss(profiles._Gauss):
 
 
 
-class PointSource(GM,PM):
+class PointSource(GM, PM):
     def __init__(self,name,model,var=None,const=None):
         if const is None:
             const = {}
@@ -159,7 +157,7 @@ class PointSource(GM,PM):
         keys = var.keys()+const.keys()
         keys.sort()
         if keys!=['amp','x','y']:
-            print "Not all parameters defined!",keys
+            print("Not all parameters defined!",keys)
             df
         self.keys = keys
         self.values = {}
@@ -177,7 +175,7 @@ class PointSource(GM,PM):
             self.ispix = True
         self.setValues()
         self.name = name
-        self.convolve = None 
+        self.convolve = None
 
     def __setattr__(self,key,value):
         if key=='logamp':
@@ -210,4 +208,3 @@ class PointSource(GM,PM):
         for key in self.vmap:
             self.values[self.vmap[key]] = pars[key]
         self.setValues()
-

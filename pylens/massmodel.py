@@ -1,4 +1,5 @@
-import models
+from __future__ import absolute_import, division, print_function
+from .models import _PowerLaw, _ExtShear, _MassSheet, _NFW
 from math import pi
 
 _PowerLawPars = [['b','eta','pa','q','x','y'],['b','eta','q','theta','x','y']]
@@ -6,7 +7,7 @@ _ExtShearPars = [['b','pa','x','y'],['b','theta','x','y']]
 _MassSheetPars = [['b','x','y'],['b','x','y']]
 _NFWPars = [['b','x','y'],['b','x','y']]
 
-class PowerLaw(models._PowerLaw):
+class PowerLaw(_PowerLaw):
     """
     A subclass for power-law mass models. The `power-law' aspect doesn't
         currently work, but it does work for SIE models.
@@ -21,7 +22,7 @@ class PowerLaw(models._PowerLaw):
         keys.sort()
         if keys not in _PowerLawPars:
             import sys
-            print "Not all parameters defined!"
+            print("Not all parameters defined!")
             sys.exit()
         models._PowerLaw.__init__(self)
         self.keys = keys
@@ -63,7 +64,7 @@ class SIE(PowerLaw):
         PowerLaw.__init__(self,name,var,c)
 
 
-class ExtShear(models._ExtShear):
+class ExtShear(_ExtShear):
     def __init__(self,name,var=None,const=None):
         if const is None:
             const = {}
@@ -74,7 +75,7 @@ class ExtShear(models._ExtShear):
         keys.sort()
         if keys not in _ExtShearPars:
             import sys
-            print "Not all parameters defined!",keys
+            print("Not all parameters defined!",keys)
             sys.exit()
         models._ExtShear.__init__(self)
         self.keys = keys
@@ -104,7 +105,7 @@ class ExtShear(models._ExtShear):
         for key in self.vmap:
             self.__setattr__(key,self.vmap[key].value)
 
-class MassSheet(models._MassSheet):
+class MassSheet(_MassSheet):
     def __init__(self,name,var=None,const=None):
         if const is None:
             const = {}
@@ -115,7 +116,7 @@ class MassSheet(models._MassSheet):
         keys.sort()
         if keys not in _MassSheetPars:
             import sys
-            print "Not all parameters defined!",keys
+            print("Not all parameters defined!",keys)
             sys.exit()
         models._MassSheet.__init__(self)
         self.keys = keys
@@ -139,7 +140,7 @@ class MassSheet(models._MassSheet):
 
 
 
-class NFW(models._NFW):
+class NFW(_NFW):
     """
     A subclass for power-law mass models. The `power-law' aspect doesn't
         currently work, but it does work for SIE models.
@@ -154,7 +155,7 @@ class NFW(models._NFW):
         keys.sort()
         if keys not in _PowerLawPars:
             import sys
-            print "Not all parameters defined!"
+            print("Not all parameters defined!")
             sys.exit()
         models._PowerLaw.__init__(self)
         self.keys = keys

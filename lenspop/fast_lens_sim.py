@@ -1,16 +1,18 @@
+from __future__ import absolute_import, division, print_function
+
 import indexTricks as iT
 import numpy
-from pylens import *
-from imageSim import profiles,convolve,SBModels
-import distances as D
-import cPickle
-import indexTricks as iT
-import numpy,pylab
-from imageSim import profiles,convolve,models
+from six.moves import cPickle as pickle
 import pylab as plt
-from Surveys import Survey
+
+from pylens import *
+import imageSim
+import distances as D
+from .surveys import Survey
+
 from StochasticObserving import SO
 from SignaltoNoise import S2N
+
 
 class FastLensSim(SO,S2N):
     def __init__(self,surveyname,fractionofseeing=1):
@@ -50,9 +52,9 @@ class FastLensSim(SO,S2N):
         self.zeroexposuretime=survey.zeroexposuretime
         #-----------------------------------------------------
         ###do some setup
-	self.xl=(self.side-1.)/2.
-	self.yl=(self.side-1.)/2.
-	self.x,self.y = iT.coords((self.side,self.side))
+        self.xl=(self.side-1.)/2.
+        self.yl=(self.side-1.)/2.
+        self.x,self.y = iT.coords((self.side,self.side))
         self.r2 = (self.x-self.xl)**2+(self.y-self.yl)**2
 
         self.pixelunits=False
@@ -93,9 +95,9 @@ class FastLensSim(SO,S2N):
 
 #===========================================================================
 
-    def trytoconvert(self,par,p):        
+    def trytoconvert(self,par,p):
         try:return par/p
-        except NameError:print "warning one of the parameters is not defined"
+        except NameError:print("warning one of the parameters is not defined")
 
 #===========================================================================
 
@@ -107,7 +109,7 @@ class FastLensSim(SO,S2N):
                 self.rl[band]=self.trytoconvert(r[band],self.pixelsize)
         self.ml=m
         self.ql=q
-        
+
         self.deltaxl=(numpy.random.rand()-0.5)*2*jiggle
         self.deltayl=(numpy.random.rand()-0.5)*2*jiggle
         if jiggle!=0:
@@ -117,7 +119,12 @@ class FastLensSim(SO,S2N):
             self.deltap=0.
 
         self.nl=n
-        self.gal=SBModels.Sersic('gal',{'x':self.xl+self.deltaxl,'y':self.yl+self.deltayl,'q':self.ql,'pa':90+self.deltap,'re':self.rl[band],'n':self.nl})
+        self.gal = imageSim.Sersic('gal', {'x':self.xl+self.deltaxl,
+                                           'y':self.yl+self.deltayl,
+                                           'q':self.ql,
+                                           'pa':90+self.deltap,
+                                           're':self.rl[band],
+                                           'n':self.nl})
 
         self.xb=xb
         self.xp=xp
@@ -139,7 +146,7 @@ class FastLensSim(SO,S2N):
         self.rs[sourcenumber]=r
         self.ns[sourcenumber]=n
         self.bl[sourcenumber]=b
-        self.src[sourcenumber]=SBModels.Sersic('src%i'%sourcenumber,
+        self.src[sourcenumber] = imageSim.Sersic('src%i'%sourcenumber,
             {'x':self.xs[sourcenumber],'y':self.ys[sourcenumber],\
              'q':self.qs[sourcenumber],'pa':self.ps[sourcenumber],\
              're':self.rs[sourcenumber],'n':self.ns[sourcenumber]})
@@ -178,7 +185,7 @@ class FastLensSim(SO,S2N):
         for band in bands:
             unlensedtotalsrcflux=10**(-(self.ms[sourcenumber][band]-self.zeropoints[band])/2.5)
             sm[band]=srcmodel*unlensedtotalsrcflux
-        
+
             if sm[band].max()>0:
                 self.totallensedsrcmag[sourcenumber][band]=-2.5*numpy.log10(sm[band].sum())+self.zeropoints[band]
             else:
@@ -217,7 +224,8 @@ class FastLensSim(SO,S2N):
       if bands==[]:bands=self.bands
       for band in bands:
         if self.seeing[band]!=0:
-          convolvedgal,self.psfFFT[band] = convolve.convolve(self.galmodel[band],self.psf[band],True)
+          convolvedgal, self.psfFFT[band] = \
+            imageSim.convolve(self.galmodel[band], self.psf[band], True)
           convolvedgal[convolvedgal<0]=0
           self.convolvedgal[band]=convolvedgal
 
@@ -225,9 +233,11 @@ class FastLensSim(SO,S2N):
           convolvedmodel=convolvedgal*1
 
           convolvedsrc={}
-            
+
           for sourcenumber in self.sourcenumbers:
-            convolvedsrc[sourcenumber]=convolve.convolve(self.sourcemodel[sourcenumber][band],self.psfFFT[band],False)[0]
+            convolvedsrc[sourcenumber] = \
+              imageSim.convolve(self.sourcemodel[sourcenumber][band],
+                                self.psfFFT[band], False)[0]
             convolvedsrc[sourcenumber][convolvedsrc[sourcenumber]<0]=0
             self.convolvedsrc[sourcenumber][band]=convolvedsrc[sourcenumber]
             convolvedmodel+=convolvedsrc[sourcenumber]
@@ -240,7 +250,7 @@ class FastLensSim(SO,S2N):
           #skybackground per second per square arcsecond
           background=(10**(-(self.SB[band]-self.zeropoints[band])/2.5))*(self.pixelsize**2)
           tot_bg=background*exposurecorrection
-          
+
 
           sigma=((convolvedmodel+tot_bg)+self.nexposures*(self.readnoise**0.5)**2)**.5
 
@@ -251,7 +261,7 @@ class FastLensSim(SO,S2N):
           fakeLens/=exposurecorrection
           sigma/=exposurecorrection
 
-          self.image[band]=fakeLens*1 
+          self.image[band]=fakeLens*1
           self.fakeLens[band]=fakeLens*1
           self.sigma[band]=sigma*1
           self.fakeResidual[0][band]=fakeLens-convolvedgal
@@ -260,7 +270,7 @@ class FastLensSim(SO,S2N):
                   convolvedsrc[sourcenumber],sigma)
               self.fakeResidual[sourcenumber][band]=\
                   fakeLens-convolvedmodel+convolvedsrc[sourcenumber]
-            
+
 #===========================================================================
     def loadModel(self,ideallens):
         self.galmodel,self.sourcemodel,self.model,self.magnification,self.totallensedsrcmag=ideallens
@@ -279,7 +289,7 @@ class FastLensSim(SO,S2N):
         if stochastic==True:self.stochasticObserving(mode=stochasticmode,SOdraw=SOdraw,musthaveallbands=musthaveallbands)
         if self.seeingtest=="Fail":return None
         if bands==[]:bands=self.bands
-        
+
         if MakeModel:
             self.MakeModel(bands)
 
@@ -288,8 +298,8 @@ class FastLensSim(SO,S2N):
 
         self.ObserveLens(noisy=noisy)
         return [self.galmodel,self.sourcemodel,self.model,self.magnification,self.totallensedsrcmag]
-        
-        
+
+
 #===========================================================================
 
 
