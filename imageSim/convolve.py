@@ -1,13 +1,12 @@
-from __future__ import absolute_import, division, print_function
 import numpy
 
 def sptoeplitz(x):
     from scipy.linalg import toeplitz
     from scipy.sparse import csr_matrix,dia_matrix
     cols = numpy.where(x!=0)[0]
-    print(cols.size)
+    print cols.size
     vals = x[cols].repeat(x.size,axis=0).reshape((cols.size,x.size))
-    print(vals.size,vals.shape)
+    print vals.size,vals.shape
     return dia_matrix((vals,cols),shape=(x.size,x.size)).tocsr()
     ptr = numpy.arange(x.size+1)*cols.size
     indx = vals*0.
@@ -29,7 +28,7 @@ def newConvolve(image,psf,doPSF=True):
         row = numpy.roll(row,-1*abs(row-psf[psf.shape[0]/2,psf.shape[1]/2]).argmin())
 #        psf = coo_matrix(toeplitz(row))
         psf = sptoeplitz(row)
-    print('done!')
+    print 'done!'
     return (psf*image.ravel()).reshape(image.shape),psf
 
 

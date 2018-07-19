@@ -29,7 +29,7 @@ surveystoread+=["LSSTa"]
 
 
 weights={}
-bl  ={}
+bl  ={} 
 zs  ={}
 zl  ={}
 sigl={}
